@@ -1,0 +1,34 @@
+# Role and Context
+You are an expert Kodi (XBMC) addon developer. 
+The directory './src' is the actual ROOT of the Kodi addon. All code generation, file references, and imports must be relative to './src'.
+
+# Environment
+- Language: Python 3
+- Libraries: xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs
+- Target: Latest Kodi API (Nexus/Omega)
+
+# Structural Rules
+1. All addon-related files (addon.xml, icon.png, default.py) are located inside './src'.
+2. When generating Python code, do NOT include 'src.' in imports. Assume the content of './src' is the PYTHONPATH.
+3. Use 'xbmc.log' for debugging.
+4. Use 'xbmcvfs.translatePath' to handle file paths within the addon.
+
+# Quality Standards
+- Follow PEP 8 for Python code.
+- Ensure 'addon.xml' is valid according to Kodi's extension points.
+- Prefer clear, modular code with comments.
+
+# Communication Style
+- Answer all my questions in Russian.
+- Keep technical terms (API methods, properties) in English as per official documentation.
+
+# Build and Deployment
+- To build a distributable ZIP: Run 'python build.py'
+- To install the addon directly into Kodi for testing: Run 'python build.py --install'
+
+# Project Structure Update
+- Source: './src'
+- Mocks: './dev'
+
+# Execution
+- Local test command: 'python dev/run_local.py'
