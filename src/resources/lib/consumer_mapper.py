@@ -2,8 +2,10 @@ import xbmc
 import evdev
 from evdev import InputDevice, ecodes
 import select
+import time
 
 LOG_TAG = "ConsumerMapper"
+DEBOUNCE_TIME = 0.2
 
 # Словарь для соответствия клавиш Kodi-командам
 KEY_MAP = {
@@ -47,18 +49,26 @@ def run_mapper():
         log_error("No Consumer Control device found!")
         return
 
-    # Основной цикл с select для неблокирующего чтения
+    last_press_time = {}
+    
     try:
         while not monitor.abortRequested():
             r, _, _ = select.select([input_dev], [], [], 0.5)
             if input_dev in r:
                 for event in input_dev.read():
                     if event.type == ecodes.EV_KEY and event.code in KEY_MAP:
-                        if event.value == 1:  # key down
-                            cmd = KEY_MAP[event.code]
-                            log_info(f"Key {event.code} pressed, sending {cmd}")
-                            xbmc.executebuiltin(cmd)
-                        elif event.value == 0:  # key up
+                        if event.value == 1:
+                            current_time = time.time()
+                            last_time = last_press_time.get(event.code, 0)
+                            
+                            if current_time - last_time >= DEBOUNCE_TIME:
+                                last_press_time[event.code] = current_time
+                                cmd = KEY_MAP[event.code]
+                                log_info(f"Key {event.code} pressed, sending {cmd}")
+                                xbmc.executebuiltin(cmd)
+                            else:
+                                log_info(f"Key {event.code} ignored (debounce)")
+                        elif event.value == 0:
                             log_info(f"Key {event.code} released")
     except Exception as e:
         log_error(f"Error reading input device: {e}")
