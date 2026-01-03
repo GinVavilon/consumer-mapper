@@ -14,5 +14,8 @@
     <description lang="en_GB">This service will run the consumer_mapper script when Kodi starts.</description>
     <platform>all</platform>
     <license>GNU GENERAL PUBLIC LICENSE Version 2</license>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>
