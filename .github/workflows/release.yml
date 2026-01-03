@@ -16,8 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Ensure tag is from master
-        run: |
-          git branch --contains $GITHUB_SHA | grep master
+        run: git branch -r --contains "$GITHUB_SHA" | grep origin/master
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,6 +25,9 @@ jobs:
 
       - name: Build addon
         run: python build.py
+
+      - name: List dist files
+        run: ls -la dist
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
