@@ -1,11 +1,24 @@
 import xbmc
+import xbmcaddon
 import evdev
 from evdev import InputDevice, ecodes
 import select
 import time
 
 LOG_TAG = "ConsumerMapper"
-DEBOUNCE_TIME = 0.2
+DEFAULT_DEBOUNCE_MS = 200
+
+def get_debounce_time():
+    try:
+        addon = xbmcaddon.Addon()
+        setting_value = addon.getSetting("debounce_time")
+        if setting_value:
+            milliseconds = int(setting_value)
+        else:
+            milliseconds = DEFAULT_DEBOUNCE_MS
+    except (AttributeError, ValueError, TypeError):
+        milliseconds = DEFAULT_DEBOUNCE_MS
+    return milliseconds / 1000.0, milliseconds
 
 # Словарь для соответствия клавиш Kodi-командам
 KEY_MAP = {
@@ -25,11 +38,13 @@ def log_error(msg):
 def run_mapper():
     log_info("Starting Consumer Mapper...")
 
+    debounce_time, milliseconds = get_debounce_time()
+    log_info(f"Debounce time set to {milliseconds} ms ({debounce_time} seconds)")
+
     monitor = xbmc.Monitor()
     devices = [InputDevice(path) for path in evdev.list_devices()]
     input_dev = None
 
-    # Находим устройства с хотя бы одной из нужных клавиш
     candidate_devices = []
     for dev in devices:
         caps = dev.capabilities()
@@ -37,7 +52,6 @@ def run_mapper():
             candidate_devices.append(dev)
 
     if candidate_devices:
-        # Выбираем устройство с названием "Consumer Control", если есть
         for dev in candidate_devices:
             if "Consumer Control" in dev.name:
                 input_dev = dev
@@ -61,7 +75,7 @@ def run_mapper():
                             current_time = time.time()
                             last_time = last_press_time.get(event.code, 0)
                             
-                            if current_time - last_time >= DEBOUNCE_TIME:
+                            if current_time - last_time >= debounce_time:
                                 last_press_time[event.code] = current_time
                                 cmd = KEY_MAP[event.code]
                                 log_info(f"Key {event.code} pressed, sending {cmd}")
