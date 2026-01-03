@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
-  <category label="Input" level="3">
+  <category label="30001" level="3">
     <setting
       id="debounce_time"
       type="number"
-      label="Debounce Time (milliseconds)"
+      label="30002"
       default="200"
       range="50,1000"
       step="50"/>

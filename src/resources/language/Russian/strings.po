@@ -1,0 +1,14 @@
+# Kodi strings file
+# Addon Name: Consumer Mapper
+msgid ""
+msgstr ""
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "#30001"
+msgid "Input"
+msgstr "Ввод"
+
+msgctxt "#30002"
+msgid "Debounce Time (milliseconds)"
+msgstr "Время задержки (миллисекунды)"
